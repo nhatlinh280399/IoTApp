@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/home"
+            android:title="Home"
+            android:icon="@drawable/ic_baseline_home_24"
+            />
+
+        <item
+            android:id="@+id/nav_user"
+            android:title="User"
+            android:icon="@drawable/ic_logo_person_24"
+            />
+
+        <item
+            android:id="@+id/nav_sensor"
+            android:title="Sensor"
+            android:icon="@drawable/ic_sensor_24"
+            />\
+
+        <item
+            android:id="@+id/nav_dashboard"
+            android:title="Dash Board"
+            android:icon="@drawable/ic_baseline_dashboard_24"
+            />
+
+
+
+    </group>
+
+
+
+        <item
+            android:title="Profile">
+
+            <menu>
+                <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/nav_setting"
+                    android:title="Settings"
+                    android:icon="@drawable/ic_settings_24"
+                    />
+
+
+                <item
+                    android:id="@+id/nav_logout"
+                    android:title="LogOut"
+                    android:icon="@drawable/ic_baseline_logout_24"
+                    />
+
+                </group>
+
+            </menu>
+
+        </item>
+
+
+
+    <item android:title="Comunicate">
+
+        <menu>
+            <group android:checkableBehavior="single">
+
+            <item
+                android:id="@+id/nav_facebook"
+                android:title="Facebook"
+                android:icon="@drawable/ic_baseline_facebook_24"
+                />
+
+            <item
+                android:id="@+id/nav_mail"
+                android:title="Gmail"
+                android:icon="@drawable/ic_baseline_email_24"
+                />
+
+            <item
+                android:id="@+id/nav_about"
+                android:title="About US"
+                android:icon="@drawable/ic_baseline_about_24"
+                />
+
+            <item
+                android:id="@+id/nav_privacy"
+                android:title="Privacy Policy"
+                android:icon="@drawable/ic_baseline_privacy_24"
+                />
+            </group>
+
+        </menu>
+
+    </item>
+</menu>
