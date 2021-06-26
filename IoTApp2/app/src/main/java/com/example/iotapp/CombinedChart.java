@@ -88,7 +88,7 @@ public class CombinedChart extends AppCompatActivity implements NavigationView.O
 
         navigationView.setCheckedItem(R.id.home);
 
-        setTitle("RealtimeLineChartActivity");
+        setTitle("Temperature Sensor");
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
 
@@ -156,7 +156,8 @@ public class CombinedChart extends AppCompatActivity implements NavigationView.O
                 data.addDataSet(set);
             }
 
-            data.addEntry(new Entry(set.getEntryCount(), (float) (Math.random() * 40) + 30f), 0);
+            int temp = DataHolder.getInstance().getData();
+            data.addEntry(new Entry(set.getEntryCount(),  (int) temp), 0);
             data.notifyDataChanged();
 
             // let the chart know it's data has changed
@@ -216,7 +217,7 @@ public class CombinedChart extends AppCompatActivity implements NavigationView.O
                     runOnUiThread(runnable);
 
                     try {
-                        Thread.sleep(25);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

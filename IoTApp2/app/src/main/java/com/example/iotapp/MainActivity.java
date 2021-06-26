@@ -1,6 +1,7 @@
 package com.example.iotapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -12,21 +13,41 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
    private DrawerLayout drawerLayout;
 
    private Toolbar mtoolbar;
-   private RelativeLayout mrt_user, mrt_sensor, mrt_settings, mrt_account_settings;
+   private RelativeLayout mrt_user, mrt_sensor, mrt_settings, mrt_account_settings, mrt_logout;
 
    private FirebaseAuth mFirebaseAuth;
+    FirebaseFirestore fStore;
+    StorageReference storageReference;
+    FirebaseUser user;
+    DocumentReference documentReference;
+    String userId;
+    ImageView profileImage2;
+
+    private TextView mtv_name;
+
 
 
     @Override
@@ -34,11 +55,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mFirebaseAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        user = mFirebaseAuth.getCurrentUser();
 
         mrt_user = findViewById(R.id.rt_user);
         mrt_sensor = findViewById(R.id.rt_sensor);
         mrt_settings = findViewById(R.id.rt_settings);
         mrt_account_settings = findViewById(R.id.rt_account);
+        mrt_logout = findViewById(R.id.rl_logout);
+        profileImage2 = findViewById(R.id.iv_avatar);
+        mtv_name = findViewById(R.id.tv_name);
+
+        StorageReference profileRef = storageReference.child("users/"+mFirebaseAuth.getCurrentUser().getUid()+"profile.jpg");
+        profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(profileImage2);
+            }
+        });
+
+        userId = mFirebaseAuth.getCurrentUser().getUid();
+
+        documentReference = fStore.collection("users").document(userId);
 
 
         mtoolbar = (Toolbar) findViewById(R.id.i_toolbar);
@@ -47,17 +86,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         drawerLayout = findViewById(R.id.drawer_layout);
 
-
         navigationView.bringToFront();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, mtoolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
-
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.setCheckedItem(R.id.home);
+
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                String fullName = documentSnapshot.getString("fName");
+                mtv_name.setText(fullName);
+
+            }
+        });
 
         mrt_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +136,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 Intent intent_account = new Intent(MainActivity.this, EditProfilesActivity.class);
                 startActivity(intent_account);
+                finish();
+            }
+        });
+
+        mrt_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFirebaseAuth.signOut();
+                Intent intent_logout = new Intent(MainActivity.this, Login.class);
+                startActivity(intent_logout);
                 finish();
             }
         });

@@ -1,5 +1,6 @@
 package com.example.iotapp;
 
+import com.example.iotapp.DataHolder;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -107,18 +108,20 @@ public class SensorActivity extends AppCompatActivity implements NavigationView.
     {
         public void run()
         {
-            for(int it=0; it<50; it++)
+            while(true)
             {
                 Message message1 = Message.obtain();
-                message1.arg1=it;
+                message1.arg1= (int) (Math.random() * 11) + 30;
                 handler1.sendMessage(message1);
 
+                DataHolder.getInstance().setData(message1.arg1);
+
                 Message message2 = Message.obtain();
-                message2.arg1=it;
+                message2.arg1=(int) (Math.random() * 41) + 60;
                 handler2.sendMessage(message2);
 
                 try {
-                    sleep(500);
+                    sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
